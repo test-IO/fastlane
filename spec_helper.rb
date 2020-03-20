@@ -8,8 +8,12 @@ Coveralls.wear! unless ENV["FASTLANE_SKIP_UPDATE_CHECK"]
 require "webmock/rspec"
 WebMock.disable_net_connect!(allow: 'coveralls.io')
 
-require "fastlane"
-UI = FastlaneCore::UI
+%w[fastlane spaceship credentials_manager fastlane_core].map do |tool|
+  $LOAD_PATH.push([File.expand_path(File.dirname(File.dirname(__FILE__))), 'fastlane', tool, 'lib'].join('/'))
+end
+
+require 'spaceship'
+require 'fastlane_core/helper'
 
 unless ENV["DEBUG"]
   fastlane_tests_tmpdir = "#{Dir.tmpdir}/fastlane_tests"
@@ -17,19 +21,7 @@ unless ENV["DEBUG"]
   $stdout = File.open(fastlane_tests_tmpdir, "w")
 end
 
-if FastlaneCore::Helper.mac?
-  xcode_path = FastlaneCore::Helper.xcode_path
-  unless xcode_path.include?("Contents/Developer")
-    UI.error("Seems like you didn't set the developer tools path correctly")
-    UI.error("Detected path '#{xcode_path}'") if xcode_path.to_s.length > 0
-    UI.error("Please run the following on your machine")
-    UI.command("sudo xcode-select -s /Applications/Xcode.app")
-    UI.error("Adapt the path if you have Xcode installed/named somewhere else")
-    exit(1)
-  end
-end
-
-(Fastlane::TOOLS + [:spaceship, :fastlane_core]).each do |tool|
+[:spaceship].each do |tool|
   path = File.join(tool.to_s, "spec", "spec_helper.rb")
   require_relative path if File.exist?(path)
   require tool.to_s
@@ -38,10 +30,6 @@ end
 my_main = self
 RSpec.configure do |config|
   config.before(:each) do |current_test|
-    # We don't want to call the RubyGems API at any point
-    # This was a request that was added with Ruby 2.4.0
-    allow(Fastlane::FastlaneRequire).to receive(:install_gem_if_needed).and_return(nil)
-
     ENV['FASTLANE_PLATFORM_NAME'] = nil
 
     # execute `before_each_*` method from spec_helper for each tool
