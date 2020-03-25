@@ -45,6 +45,14 @@ module Spaceship
         return Spaceship::ConnectAPI.get_app(app_id: app_id, includes: includes).first
       end
 
+      def create_beta_group(name: nil, build_ids: [])
+        return Spaceship::ConnectAPI.post_beta_group(app_id: id, name: name, build_ids: build_ids)
+      end
+
+      def create_beta_group_for_all_builds(name: nil)
+        return Spaceship::ConnectAPI.post_beta_group(app_id: id, name: name, build_ids: get_builds.flat_map(&:id))
+      end
+
       #
       # Beta Feedback
 

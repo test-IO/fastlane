@@ -1,3 +1,0 @@
-gem "fastlane-plugin-xcversion"
-gem "fastlane_core"
-gem "hemal"

@@ -168,6 +168,53 @@ module Spaceship
         Client.instance.get("betaGroups", params)
       end
 
+      def get_beta_group(group_id: nil, includes: nil)
+        params = Client.instance.build_params(filter: nil, includes: includes, limit: nil, sort: nil)
+        Client.instance.get(['betaGroups', group_id].join('/'), params)
+      end
+
+      def post_beta_group(app_id: nil, name: nil, public_link: true, build_ids: [])
+        name = name || ['test group for', app_id].join(' ')
+        body = {
+          data: {
+            attributes: {
+              name: name,
+              publicLinkEnabled: public_link
+            },
+            type: 'betaGroups',
+            relationships: {
+              app: {
+                data: {
+                  type: 'apps',
+                  id: app_id
+                }
+              },
+              builds: {
+                data: build_ids.map { |id| { type: 'builds', id: id }}
+              }
+            }
+          }
+        }
+
+        Client.instance.post('betaGroups', body)
+      end
+
+      def enable_public_link(group_id: nil)
+        body = {
+          data: {
+            attributes: { 'publicLinkEnabled' => true },
+            id: group_id,
+            type: "betaGroups"
+          }
+        }
+
+        Client.instance.patch(['betaGroups', group_id].join('/'), body)
+      end
+
+      def delete_beta_group(group_id: nil)
+        Client.instance.delete(['betaGroups', group_id].join('/'))
+      end
+
       def add_beta_groups_to_build(build_id: nil, beta_group_ids: [])
         body = {
           data: beta_group_ids.map do |id|

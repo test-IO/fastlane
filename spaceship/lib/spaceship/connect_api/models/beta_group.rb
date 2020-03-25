@@ -28,9 +28,30 @@ module Spaceship
         return "betaGroups"
       end
 
+      def self.all(filter: {}, includes: nil, limit: nil, sort: nil)
+        resps = Spaceship::ConnectAPI.get_beta_groups(filter: filter, includes: includes, limit: limit, sort: sort).all_pages
+        return resps.flat_map(&:to_models)
+      end
+
+      def self.get(group_id: nil, includes: nil)
+        return Spaceship::ConnectAPI.get_beta_group(group_id: group_id, includes: includes).first
+      end
+
+      def self.create(app_id: nil, name: nil, build_ids: [])
+        return Spaceship::ConnectAPI.post_beta_group(app_id: app_id, name: name, public_link: true, build_ids: build_ids).first
+      end
+
       #
       # API
       #
+
+      def enable_public_link
+        return Spaceship::ConnectAPI.enable_public_link(group_id: id).first
+      end
+
+      def destroy
+        return Spaceship::ConnectAPI.delete_beta_group(group_id: id)
+      end
 
       # beta_testers - [{email: "", firstName: "", lastName: ""}]
       def post_bulk_beta_tester_assignments(beta_testers: nil)
