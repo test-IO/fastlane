@@ -57,8 +57,8 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency('excon', '>= 0.71.0', '< 1.0.0') # Great HTTP Client
   spec.add_dependency('faraday-cookie_jar', '~> 0.0.6')
-  spec.add_dependency('faraday', '~> 0.17') # Used for deploygate, hockey and testfairy actions
-  spec.add_dependency('faraday_middleware', '~> 0.13.1') # same as faraday
+  spec.add_dependency('faraday', '~> 1.1.0') # Used for deploygate, hockey and testfairy actions
+  spec.add_dependency('faraday_middleware', '~> 1.1.0') # same as faraday
   spec.add_dependency('jwt', '~> 2.1.0') # Used for generating authentication tokens for AppStore connect api
   spec.add_dependency('plist', '>= 3.1.0', '< 4.0.0') # Needed for set_build_number_repository and get_info_plist_value actions
   spec.add_dependency('babosa', '>= 1.0.2', "< 2.0.0")
@@ -77,8 +77,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency('pry-rescue')
   spec.add_development_dependency('pry-stack_explorer')
   spec.add_development_dependency('yard', '~> 0.9.11')
-  spec.add_development_dependency('webmock', '~> 2.3.2')
-  spec.add_development_dependency('hashdiff', '< 0.4.0') # Locked under 0.4.0 until webmock bumped up to 3.6.0 or greater - HashDiff was changed to Hashdiff
+  spec.add_development_dependency('webmock', '~> 3.8')
   spec.add_development_dependency('coveralls', '~> 0.8.13')
   spec.add_development_dependency('rubocop', Fastlane::RUBOCOP_REQUIREMENT)
   spec.add_development_dependency('rubocop-require_tools', '>= 0.1.2')
